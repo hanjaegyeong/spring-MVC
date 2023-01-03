@@ -24,7 +24,9 @@ dependencies {
 
 	//JSP 추가 시작
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-	implementation 'javax.servlet:jstl'
+//	implementation 'javax.servlet:jstl'
+	implementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0"
+	implementation "org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1"
 	//JSP 추가 끝
 
 	compileOnly 'org.projectlombok:lombok'
