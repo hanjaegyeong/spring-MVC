@@ -1,4 +1,4 @@
-package hello.servlet.web.servlet.servletmvc;
+package hello.servlet.web.servletmvc;
 
 import com.sun.source.tree.MemberReferenceTree;
 import hello.servlet.domain.member.Member;
