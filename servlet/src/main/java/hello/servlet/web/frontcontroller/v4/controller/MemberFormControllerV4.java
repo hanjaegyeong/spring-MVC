@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class MemberFormControllerV4 implements ControllerV4 {
 
-    //String타입으로 뷰 논리이름만 반환
+    //String타입으로 뷰 논리이름만 반환s
     @Override
     public String process(Map<String, String> paramMap, Map<String, Object> model) {
         return "new-form";
