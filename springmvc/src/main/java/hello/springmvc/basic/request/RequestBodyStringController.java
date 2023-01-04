@@ -45,7 +45,7 @@ public class RequestBodyStringController {
         return new HttpEntity<>("ok");
     }
 
-    @PostMapping("/request-body-string-v3")
+    @PostMapping("/request-body-string-v4")
     public HttpEntity requestBodyStringV3(@RequestBody String messageBody) throws IOException { //애노테이션으로 최적화
         log.info("messageBdoy={}", messageBody);
         return new HttpEntity<>("ok");
