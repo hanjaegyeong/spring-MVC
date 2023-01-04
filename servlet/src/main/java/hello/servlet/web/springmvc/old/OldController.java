@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-@Component("/springmvc/old-controller") //spring bean 이름을 url 패턴으로 맞춘 것
+@Component("/springmvc/old-controller")
 public class OldController implements Controller {
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("OldController.handleRequest");
-        return null;
+        return new ModelAndView("new-form"); // 논리이름만으로 가능->properties에서 접두 접미어 생성해서 뷰리졸버 역할
     }
 }
