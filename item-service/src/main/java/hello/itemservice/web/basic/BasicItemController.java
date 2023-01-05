@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -37,6 +38,16 @@ public class BasicItemController {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "basic/item";
+    }
+
+    @GetMapping("/add") //상품 등록
+    public String addForm() {
+        return "basic/addForm";
+    }
+
+    @PostMapping("/add") //상품 등록. 동일 url이지만 Post임! 버튼으로(Form) 응답 오는 경우
+    public String save() {
+        return "basic/addForm";
     }
 
     /**
