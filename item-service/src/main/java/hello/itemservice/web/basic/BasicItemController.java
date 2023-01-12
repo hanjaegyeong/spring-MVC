@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// add 로직은 V5가 최종본
 @Controller
 @RequestMapping("/basic/items")
 @RequiredArgsConstructor //롬복기능. final키워드 붙은 필드 생성자 자동 생성해서 주입까지 (@Autowired)
@@ -64,7 +65,7 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV4(Item item) {    //애노테이션 생략해도 Sring 제외 타입은 모두 Model로 받음
         itemRepository.save(item);
         return "basic/item";
@@ -78,12 +79,20 @@ public class BasicItemController {
         return "basic/editForm";
     }
 
-    // 상품 수정 처리 POST
+    // 상품 수정 처리 POST - 리다이렉트
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.update(itemId, item);
         //컨트롤러에 매핑된 path 변수를 리다이렉트에서도 사용 가능
         return "redirect:/basic/items/{itemId}"; // 리다이렉트!!*** 상품 상세 화면으로 이동
+    }
+
+    // 상품 등록 처리 POST - 리다이렉트
+    @PostMapping("/add")
+    public String addItemV5(Item item) {
+        itemRepository.save(item);
+        // 원래 이동될 URL로 리다이렉트(일반적으로 뷰 템플릿 리턴하면 새로고침시 계속 상품추가)
+        return "redirect:/basic/items/" + item.getId();
     }
 
     //테스트용 데이터
