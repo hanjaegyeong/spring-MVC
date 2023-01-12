@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-// add 로직은 V5가 최종본
+// add 로직은 V6이 최종본
 @Controller
 @RequestMapping("/basic/items")
 @RequiredArgsConstructor //롬복기능. final키워드 붙은 필드 생성자 자동 생성해서 주입까지 (@Autowired)
@@ -88,11 +89,24 @@ public class BasicItemController {
     }
 
     // 상품 등록 처리 POST - 리다이렉트
-    @PostMapping("/add")
+    // @PostMapping("/add")
     public String addItemV5(Item item) {
         itemRepository.save(item);
         // 원래 이동될 URL로 리다이렉트(일반적으로 뷰 템플릿 리턴하면 새로고침시 계속 상품추가)
         return "redirect:/basic/items/" + item.getId();
+    }
+
+    // RedirectionAttributes
+    // http://localhost:8080/basic/items/3?status=true 로 리다이렉트
+    @PostMapping("/add")
+    public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId()); //여기 넣은 itemId를
+        redirectAttributes.addAttribute("status", true); //안쓰고 남은 status는 쿼리파라미터로 들어감
+        return "redirect:/basic/items/{itemId}"; //여기로 들어감
+        // 즉 위의 특정상품 상세 @GetMapping("/{itemId}") 호출됨
+        // 제대로 저장된 지 확인하기 위해 status==true일 때 해당 뷰 변경하기
+        // -> 위 특정상품 상세에서 리턴하는 템플릿 item에서 저장완료 추가
     }
 
     //테스트용 데이터
