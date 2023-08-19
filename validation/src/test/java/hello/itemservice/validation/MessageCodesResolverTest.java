@@ -22,10 +22,10 @@ public class MessageCodesResolverTest {
     void messageCodesResolverFiled() {
         String[] messageCodes = codesResolver.resolveMessageCodes("required", "item", "itemName", String.class);
         assertThat(messageCodes).containsExactly(
-                "required.item.itemName", //가장 자세
-                "required.itemName", //덜 자세
-                "required.java.lang.String", //타입
-                "required" //에러코드 자체
+                "required.item.itemName", //가장 자세 level1
+                "required.itemName", //덜 자세 level2
+                "required.java.lang.String", //타입 level3 ex) 필수 문자입니다, 숫자입니다 등 띄울 때
+                "required" //에러코드 자체 level4
         );
     }
 }
