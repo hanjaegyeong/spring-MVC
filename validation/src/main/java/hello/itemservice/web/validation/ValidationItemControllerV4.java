@@ -4,6 +4,8 @@ import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import hello.itemservice.domain.item.SaveCheck;
 import hello.itemservice.domain.item.UpdateCheck;
+import hello.itemservice.web.validation.form.ItemSaveForm;
+import hello.itemservice.web.validation.form.ItemUpdateForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -44,42 +46,15 @@ public class ValidationItemControllerV4 {
         return "validation/v4/addForm";
     }
 
-    //검증기 코드 다 삭제했는데도 작동됨. Item에서 설정한 애노테이션이 Bean Validation으로 작동했기 때문
-    //컨트롤러에서도 @Validated 또는 @Valid 필요
-    //@PostMapping("/add")
-    public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-
-        //특정 필드 예외가 아닌 복합 룰 검증
-        //ObjectError는 도메인 애노테이션이 아니라 따로 빼는 것 추천(영한햄 피셜)
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
-            if (resultPrice < 10000) {
-                bindingResult.reject("totalPriceMin", new Object[]{10000,
-                        resultPrice}, null);
-            }
-        }
-        
-        //검증에 실패하면 다시 입력 폼으로
-        if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
-            return "validation/v4/addForm";
-        }
-
-        //성공 로직
-        Item savedItem = itemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
-        redirectAttributes.addAttribute("status", true);
-        return "redirect:/validation/v4/items/{itemId}";
-    }
-
-    //@Validated에 속성으로 인터페이스 지정해서 등록 요구사항만 검증하도록
+    //@ModelAttribute에 ItemSaveForm 받는 걸로 변경
+    //이때 타임리프파일 수정 없게하려고 기존 item이름 그대로 사용하는 속성 넣음(안넣으면 itemSaveForm이라는 이름으로 사용함)
     @PostMapping("/add")
-    public String addItem2(@Validated(SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem(@Validated(SaveCheck.class) @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         //특정 필드 예외가 아닌 복합 룰 검증
         //ObjectError는 도메인 애노테이션이 아니라 따로 빼는 것 추천(영한햄 피셜)
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (form.getPrice() != null && form.getQuantity() != null) {
+            int resultPrice = form.getPrice() * form.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000,
                         resultPrice}, null);
@@ -91,6 +66,12 @@ public class ValidationItemControllerV4 {
             log.info("errors={}", bindingResult);
             return "validation/v4/addForm";
         }
+
+        Item item = new Item();
+        //원래는 게터세터없이 생성자로 하는 게 제너럴
+        item.setItemName(form.getItemName());
+        item.setPrice(form.getPrice());
+        item.setQuantity(form.getQuantity());
 
         //성공 로직
         Item savedItem = itemRepository.save(item);
@@ -106,35 +87,13 @@ public class ValidationItemControllerV4 {
         return "validation/v4/editForm";
     }
 
-//    @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item, BindingResult bindingResult) {
 
-        //특정 필드 예외가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
-            if (resultPrice < 10000) {
-                bindingResult.reject("totalPriceMin", new Object[]{10000,
-                        resultPrice}, null);
-            }
-        }
-
-        //검증에 실패하면 다시 수정 폼으로
-        if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
-            return "validation/v4/editForm";
-        }
-        
-        itemRepository.update(itemId, item);
-        return "redirect:/validation/v4/items/{itemId}";
-    }
-
-    //@Validated에 인터페이스 넣어서 수정 요구사항만 검증
     @PostMapping("/{itemId}/edit")
-    public String edit2(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
 
         //특정 필드 예외가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (form.getPrice() != null && form.getQuantity() != null) {
+            int resultPrice = form.getPrice() * form.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000,
                         resultPrice}, null);
@@ -146,6 +105,11 @@ public class ValidationItemControllerV4 {
             log.info("errors={}", bindingResult);
             return "validation/v4/editForm";
         }
+
+        Item item = new Item();
+        item.setQuantity(form.getQuantity());
+        item.setItemName(form.getItemName());
+        item.setPrice(form.getPrice());
 
         itemRepository.update(itemId, item);
         return "redirect:/validation/v4/items/{itemId}";
