@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -63,7 +64,7 @@ public class HomeController {
     }
 
     // 스프링 HttpSession 이용
-    @GetMapping
+//    @GetMapping
     public String homeLoginV3(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false); // false로 해야 세션 없을 때 세션 생성 안함
@@ -72,7 +73,6 @@ public class HomeController {
         }
 
         Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
-
 
         //세션에 회원 데이터가 없으면 home
         if (loginMember == null) {
@@ -83,4 +83,21 @@ public class HomeController {
         model.addAttribute("member", loginMember);
         return "loginHome";
     }
+
+
+    // @SessionAttribute 이용
+    // value 받아오는 과정 따로 하지 않고, 애노테이션에서 바로 세션값 받아옴
+    @GetMapping
+    public String homeLoginV3Spring(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member, Model model) {
+
+        //세션에 회원 데이터가 없으면 home
+        if (member == null) {
+            return "home";
+        }
+
+        // 세션이 유지되면 login으로 이동
+        model.addAttribute("member", member);
+        return "loginHome";
+    }
+
 }
