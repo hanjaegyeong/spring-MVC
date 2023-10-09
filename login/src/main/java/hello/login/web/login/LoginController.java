@@ -49,11 +49,11 @@ public class LoginController {
 
     @PostMapping("/logout")
     public String logout(HttpServletResponse response) {
-        espireCookie(response, "memberId");
+        expireCookie(response, "memberId");
         return "redirect:/";
     }
 
-    private static void espireCookie(HttpServletResponse response, String cookieName) {
+    private static void expireCookie(HttpServletResponse response, String cookieName) {
         Cookie cookie = new Cookie(cookieName, null);
         cookie.setMaxAge(0); // 유효시간 0으로 만들어서 쿠키 종료시킴
         response.addCookie(cookie);
