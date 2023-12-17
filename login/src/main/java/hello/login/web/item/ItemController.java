@@ -25,6 +25,7 @@ public class ItemController {
 
     @GetMapping
     public String items(Model model) {
+        //로그인 여부 체크 -> 모든 컨트롤러마다 체크 넣기 힘겨움
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         return "items/items";
