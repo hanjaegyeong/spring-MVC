@@ -2,6 +2,7 @@ package hello.login.web;
 
 import hello.login.domain.member.Member;
 import hello.login.domain.member.MemberRepository;
+import hello.login.web.argumentresolver.Login;
 import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,8 +88,23 @@ public class HomeController {
 
     // @SessionAttribute 이용
     // value 받아오는 과정 따로 하지 않고, 애노테이션에서 바로 세션값 받아옴
-    @GetMapping
+//    @GetMapping
     public String homeLoginV3Spring(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member, Model model) {
+
+        //세션에 회원 데이터가 없으면 home
+        if (member == null) {
+            return "home";
+        }
+
+        // 세션이 유지되면 login으로 이동
+        model.addAttribute("member", member);
+        return "loginHome";
+    }
+
+    // ArgumentResolver 이용
+    // 컨트롤러에서 공통으로 사용하는 것들을 애노테이션 하나로 묶을 수 있음 (위의 @SessionAttribute를 직접 만든 @Login을 통해 간소화
+    @GetMapping
+    public String homeLoginV3ArgumentResolver(@Login Member member, Model model) { // 직접만든 argumentresolver인 @Login 사용
 
         //세션에 회원 데이터가 없으면 home
         if (member == null) {
