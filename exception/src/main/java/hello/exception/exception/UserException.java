@@ -1,5 +1,6 @@
 package hello.exception.exception;
 
+// 사용자 정의 예외
 public class UserException extends RuntimeException {
 
     public UserException() {
