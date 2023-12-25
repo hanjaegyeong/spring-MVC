@@ -59,7 +59,7 @@ public class ItemController {
         return "item-view";
     }
 
-    //이미지 다운 시 매핑되는 주소
+    //이미지 보이게 해주는 컨트롤러
     @ResponseBody
     @GetMapping("/images/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
